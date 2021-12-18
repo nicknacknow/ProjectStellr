@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{a2004894-7169-4c97-8690-6db6d71b3b7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Exploit">
+      <UniqueIdentifier>{89cbd902-97cd-4f03-8d01-d2e2031ec94f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{4b5bda7a-05a1-421b-b21b-e5d507300009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Misc">
+      <UniqueIdentifier>{2b932ddd-cb04-43a8-a84d-97c7cfa71b11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Hooks">
+      <UniqueIdentifier>{4b201b69-9719-4ce5-a977-449cde88bccc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Exploit\Visual">
+      <UniqueIdentifier>{52e9e715-a8e0-45d6-8bd7-8608d5501390}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="hookHandler.h">
+      <Filter>Header Files\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hookVTable.h">
+      <Filter>Header Files\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="Chams.h">
+      <Filter>Header Files\Exploit\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="Cheat.h">
+      <Filter>Header Files\Exploit</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
