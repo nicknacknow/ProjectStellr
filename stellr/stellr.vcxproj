@@ -22,14 +22,26 @@
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Aimbot.h" />
     <ClInclude Include="Chams.h" />
     <ClInclude Include="Cheat.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="CoordinateFrame.h" />
+    <ClInclude Include="CurrentCamera.h" />
+    <ClInclude Include="ESP.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hookHandler.h" />
     <ClInclude Include="hookVTable.h" />
+    <ClInclude Include="Matrix3.h" />
+    <ClInclude Include="Memory.h" />
+    <ClInclude Include="MemScan.h" />
     <ClInclude Include="MinHook.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="rblx.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="TaskScheduler.h" />
+    <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

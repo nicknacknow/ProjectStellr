@@ -1,17 +1,6 @@
 #include "globals.h"
 
-namespace stellr {
-	class stellr {
-	public:
-		static void print() {
-			printf("ok");
-		}
-	};
-}
-
-void __cdecl wtf() {
-	printf("yo\n");
-}
+#include "TaskScheduler.h"
 
 void init() {
 	Console::bypass();
@@ -19,7 +8,7 @@ void init() {
 	Console::alwaysontop();
 
 	Hooks::hookHandler* hookHandler = Hooks::hookHandler::GetSingleton();
-
+	RBX::TaskScheduler* taskScheduler = RBX::TaskScheduler::GetSingleton();
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {

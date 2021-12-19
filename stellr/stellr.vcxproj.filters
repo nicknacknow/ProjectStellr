@@ -27,6 +27,12 @@
     <Filter Include="Header Files\Exploit\Visual">
       <UniqueIdentifier>{52e9e715-a8e0-45d6-8bd7-8608d5501390}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Exploit\RBLX">
+      <UniqueIdentifier>{3a7b1cb4-b234-41c3-ae4c-ae2f2ddec3ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Exploit\RBLX\g3dimpl">
+      <UniqueIdentifier>{98e70543-fc8b-4e74-851d-881b0d469e1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -55,8 +61,44 @@
     <ClInclude Include="Chams.h">
       <Filter>Header Files\Exploit\Visual</Filter>
     </ClInclude>
-    <ClInclude Include="Cheat.h">
+    <ClInclude Include="ESP.h">
+      <Filter>Header Files\Exploit\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="rblx.h">
+      <Filter>Header Files\Exploit\RBLX</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskScheduler.h">
+      <Filter>Header Files\Exploit\RBLX</Filter>
+    </ClInclude>
+    <ClInclude Include="MemScan.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Aimbot.h">
       <Filter>Header Files\Exploit</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateFrame.h">
+      <Filter>Header Files\Exploit\RBLX\g3dimpl</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix3.h">
+      <Filter>Header Files\Exploit\RBLX\g3dimpl</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Header Files\Exploit\RBLX\g3dimpl</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Header Files\Exploit\RBLX\g3dimpl</Filter>
+    </ClInclude>
+    <ClInclude Include="Cheat.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Header Files\Exploit\RBLX</Filter>
+    </ClInclude>
+    <ClInclude Include="CurrentCamera.h">
+      <Filter>Header Files\Exploit\RBLX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

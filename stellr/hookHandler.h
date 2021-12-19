@@ -68,12 +68,14 @@ namespace Hooks {
 }
 
 HRESULT WINAPI hkPresent(IDXGISwapChain* pSwapChain, UINT syncInterval, UINT flags) {
-	//printf("soak him\n");
+	Exploit::Aimbot::Aimbot* aimbot = Exploit::Aimbot::Aimbot::GetSingleton();
+	aimbot->OnStep();
+
 	return Hooks::origPresent(pSwapChain, syncInterval, flags);
 }
 
 void WINAPI hkDrawIndexed(ID3D11DeviceContext* pContext, UINT indexCount, UINT startIndexLocation, INT baseVertexLocation) {
-	Visual::Chams* chams = Visual::Chams::GetSingleton();
+	Exploit::Visual::Chams* chams = Exploit::Visual::Chams::GetSingleton();
 	chams->OnStep(pContext, indexCount, startIndexLocation, baseVertexLocation);
 
 	return Hooks::origDrawIndexed(pContext, indexCount, startIndexLocation, baseVertexLocation);

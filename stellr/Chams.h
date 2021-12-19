@@ -45,61 +45,66 @@ HRESULT GenerateShader(ID3D11Device* pD3DDevice, ID3D11PixelShader** pShader, fl
 	return S_OK;
 }
 
-namespace Visual {
-	class Chams : public Cheat::Cheat, public Singleton::Singleton<Chams> {
-	private:
-		ID3D11DepthStencilState* depthStencilState_OPP = NULL; //depth off
-		ID3D11DepthStencilState* depthStencilState_ORIG = NULL; //depth on
+namespace Exploit {
+	namespace Visual {
+		class Chams : public Cheat::Cheat, public Singleton::Singleton<Chams> {
+		private:
+			ID3D11DepthStencilState* depthStencilState_OPP = NULL; //depth off
+			ID3D11DepthStencilState* depthStencilState_ORIG = NULL; //depth on
 
-		ID3D11PixelShader* pShader = NULL;
-	public:
-		void OnStep(ID3D11DeviceContext* pContext, UINT indexCount, UINT startIndexLocation, INT baseVertexLocation) {
-			if (!this->Enabled) return;
-			// https://www.unknowncheats.me/forum/direct3d/349071-d3d11-shader-chams-transparent-walls-tons-info-post.html
-			ID3D11Device* device = nullptr;
-			pContext->GetDevice(&device);
+			ID3D11PixelShader* pShader = NULL;
+		public:
+			void OnStep(ID3D11DeviceContext* pContext, UINT indexCount, UINT startIndexLocation, INT baseVertexLocation) {
+				if (!this->Enabled) return;
+				// https://www.unknowncheats.me/forum/direct3d/349071-d3d11-shader-chams-transparent-walls-tons-info-post.html
+				ID3D11Device* device = nullptr;
+				pContext->GetDevice(&device);
 
-			if (!pShader)
-				GenerateShader(device, &pShader, (209.f / 255.f), (91.f / 255.f), (119.f / 255.f));
+				if (!pShader)
+					GenerateShader(device, &pShader, (209.f / 255.f), (91.f / 255.f), (119.f / 255.f));
 
-			UINT stride = getStride(pContext);
-			if (stride == 44 || (AdditionalStride && stride == 52)) {
-				pContext->OMGetDepthStencilState(&depthStencilState_ORIG, 0);
-				pContext->OMSetDepthStencilState(depthStencilState_OPP, 0);
+				UINT stride = getStride(pContext);
+				if (stride == 44 || (AdditionalStride && stride == 52)) {
+					if (!this->WallCheck) {
+						pContext->OMGetDepthStencilState(&depthStencilState_ORIG, 0);
+						pContext->OMSetDepthStencilState(depthStencilState_OPP, 0);
 
-				pContext->PSSetShader(pShader, NULL, NULL);
+						Hooks::origDrawIndexed(pContext, indexCount, startIndexLocation, baseVertexLocation);
 
-				Hooks::origDrawIndexed(pContext, indexCount, startIndexLocation, baseVertexLocation);
+						pContext->OMSetDepthStencilState(depthStencilState_ORIG, 0);
+						depthStencilState_ORIG->Release(); depthStencilState_ORIG = nullptr;
+					}
 
-				pContext->OMSetDepthStencilState(depthStencilState_ORIG, 0);
-				depthStencilState_ORIG->Release(); depthStencilState_ORIG = nullptr;
+					pContext->PSSetShader(pShader, NULL, NULL);
+					
+					if (this->WireFrame) {
+						ID3D11RasterizerState* rState;
+						D3D11_RASTERIZER_DESC rDesc;
 
-				if (this->WireFrame) {
-					ID3D11RasterizerState* rState;
-					D3D11_RASTERIZER_DESC rDesc;
+						pContext->RSGetState(&rState);
+						rState->GetDesc(&rDesc);
 
-					pContext->RSGetState(&rState);
-					rState->GetDesc(&rDesc);
+						rDesc.FillMode = D3D11_FILL_WIREFRAME;
 
-					rDesc.FillMode = D3D11_FILL_WIREFRAME;
+						device->CreateRasterizerState(&rDesc, &rState);
 
-					device->CreateRasterizerState(&rDesc, &rState);
-
-					pContext->RSSetState(rState);
+						pContext->RSSetState(rState);
+					}
 				}
 			}
-		}
-	private:
-		UINT getStride(ID3D11DeviceContext* pContext) {
-			ID3D11Buffer* veBuffer;
-			UINT stride = 0;
-			UINT veBufferOffset = 0;
-			pContext->IAGetVertexBuffers(0, 1, &veBuffer, &stride, &veBufferOffset);
-			return stride;
-		}
+		private:
+			UINT getStride(ID3D11DeviceContext* pContext) {
+				ID3D11Buffer* veBuffer;
+				UINT stride = 0;
+				UINT veBufferOffset = 0;
+				pContext->IAGetVertexBuffers(0, 1, &veBuffer, &stride, &veBufferOffset);
+				return stride;
+			}
 
-		// properties
-		bool AdditionalStride = false;
-		bool WireFrame = true;
-	};
+			// properties
+			bool AdditionalStride = false;
+			bool WireFrame = true;
+			bool WallCheck = false;
+		};
+	}
 }
