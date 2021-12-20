@@ -45,7 +45,7 @@ namespace RBX {
 			GetSet(uintptr_t p) : ClassHandler(readloc(p)) {
 				vtable = Hooks::HookVTable::hook(this->ptr(), 6);
 				this->GetFunc = vtable.get_original_func(3);
-				this->SetFunc = vtable.get_original_func(3);
+				this->SetFunc = vtable.get_original_func(4);
 			}
 
 			uintptr_t GetFunc;

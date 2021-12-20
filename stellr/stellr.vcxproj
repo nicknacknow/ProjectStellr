@@ -25,6 +25,7 @@
     <ClInclude Include="Aimbot.h" />
     <ClInclude Include="Chams.h" />
     <ClInclude Include="Cheat.h" />
+    <ClInclude Include="CheckHelper.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="CoordinateFrame.h" />
     <ClInclude Include="CurrentCamera.h" />
@@ -37,6 +38,7 @@
     <ClInclude Include="MemScan.h" />
     <ClInclude Include="MinHook.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Quat.h" />
     <ClInclude Include="rblx.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="TaskScheduler.h" />

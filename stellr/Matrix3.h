@@ -24,6 +24,27 @@ namespace g3dimpl {
                 fEntry10, fEntry11, fEntry12,
                 fEntry20, fEntry21, fEntry22);
         }
+        
+        template <class T>
+        void setMatrix3(const T& _q) {
+            T q = _q;
+            q.unitize();
+            float xx = 2.0f * q.x * q.x;
+            float xy = 2.0f * q.x * q.y;
+            float xz = 2.0f * q.x * q.z;
+            float xw = 2.0f * q.x * q.w;
+
+            float yy = 2.0f * q.y * q.y;
+            float yz = 2.0f * q.y * q.z;
+            float yw = 2.0f * q.y * q.w;
+
+            float zz = 2.0f * q.z * q.z;
+            float zw = 2.0f * q.z * q.w;
+
+            set(1.0f - yy - zz, xy - zw, xz + yw,
+                xy + zw, 1.0f - xx - zz, yz - xw,
+                xz - yw, yz + xw, 1.0f - xx - yy);
+        }
 
         void set(
             float fEntry00, float fEntry01, float fEntry02,
@@ -259,6 +280,22 @@ namespace g3dimpl {
             Matrix3 kInverse = zero();
             inverse(kInverse, fTolerance);
             return kInverse;
+        }
+
+        Matrix3 fromEulerAnglesXYZ(float fYAngle, float fPAngle, float fRAngle) {
+            float fCos = cosf(fYAngle), fSin = sinf(fYAngle);
+
+            Matrix3 kXMat(1.0f, 0.0f, 0.0f, 0.0f, fCos, -fSin, 0.0, fSin, fCos);
+
+            fCos = cosf(fPAngle);
+            fSin = sinf(fPAngle);
+            Matrix3 kYMat(fCos, 0.0f, fSin, 0.0f, 1.0f, 0.0f, -fSin, 0.0f, fCos);
+
+            fCos = cosf(fRAngle);
+            fSin = sinf(fRAngle);
+            Matrix3 kZMat(fCos, -fSin, 0.0f, fSin, fCos, 0.0f, 0.0f, 0.0f, 1.0f);
+
+            return kXMat * (kYMat * kZMat);
         }
     };
 }

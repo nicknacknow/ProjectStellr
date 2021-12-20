@@ -4,13 +4,17 @@
 #include "CurrentCamera.h"
 #include "Mouse.h"
 
+#include "CheckHelper.h"
+
 namespace Exploit {
 	namespace Aimbot {
 
 		const char* aimPart = "Head";
+		bool aimbotMethod = true;
+		bool WallCheck = true;
+		bool Smoothing = true;
 
-
-		class Aimbot : public Cheat::Cheat, public Singleton::Singleton<Aimbot> {
+		class Aimbot : public Cheat::Cheat, public CheckHelper, public Singleton::Singleton<Aimbot> {
 		private:
 			struct RaycastResult {
 				RBX::Vector3 Position; // The world space point at which the intersection occurred, usually a point directly on the surface of the instance.
@@ -37,6 +41,9 @@ namespace Exploit {
 			Aimbot() { initialise(); }
 
 			bool static GetClosestPlayerToMouse(RBX::Instance Players, RBX::Instance& target) {
+				static RBX::Instance workspace;  if (!workspace.ptr()) workspace = Players.Parent().GetPropertyValue<int>("Workspace");
+				static RBX::Reflection::BoundFuncDescriptor Raycast; if (!Raycast.ptr()) Raycast = workspace.FindBoundFuncDescriptor("Raycast");
+
 				static RBX::Mouse* mouseClass = RBX::Mouse::GetSingleton();
 				static RBX::Instance mouse = mouseClass->GetMouse(); if (!mouse) return false;
 				static RBX::CurrentCamera* CurrentCamera = RBX::CurrentCamera::GetSingleton();
@@ -45,7 +52,7 @@ namespace Exploit {
 				static RBX::Vector2 mousePos{ (float)mouse.GetPropertyValue<int>("X"), (float)mouse.GetPropertyValue<int>("Y") };
 
 				static RBX::Instance LocalPlayer = Players.GetPropertyValue<int>("LocalPlayer"); if (!LocalPlayer.ptr()) return false; 
-				RBX::Instance LocalCharacter = LocalPlayer.GetPropertyValue<int>("Character"); printf("localCharacter : %p\n", LocalCharacter.ptr()); if (!LocalCharacter.ptr())return false;
+				RBX::Instance LocalCharacter = LocalPlayer.GetPropertyValue<int>("Character"); if (!LocalCharacter.ptr())return false;
 				RBX::Instance LocalOriginPart = LocalCharacter.FindFirstChild(aimPart); if (!LocalOriginPart.ptr()) LocalOriginPart = LocalCharacter.GetPropertyValue<int>("PrimaryPart"); if (!LocalOriginPart)return false;
 				static RBX::Vector3  LocalOrigin = LocalOriginPart.GetCustomPropertyValue<RBX::Vector3>("Position");
 
@@ -56,8 +63,21 @@ namespace Exploit {
 					if (!(player.ptr() && player.GetClassDescriptor().ClassName() == "Player")) continue;
 					if (RBX::Instance character = player.GetPropertyValue<int>("Character")) {
 						if (RBX::Instance target = character.FindFirstChild("Head")) {
-							// do checks l8r
+							if (!DoChecks(player)) continue;
 							RBX::Vector3 position = target.GetCustomPropertyValue<RBX::Vector3>("Position");
+
+							if (Exploit::Aimbot::WallCheck) {
+								RBX::Vector3 vec = position - LocalOrigin;
+								RBX::Vector3 direction = vec.unit() * vec.magnitude();
+								std::vector<uintptr_t> FilterDescendantsInstances = { LocalCharacter.ptr(), LocalCharacter.Ref(), character.ptr(), character.Ref() };
+
+								RaycastParams* raycastParams = new RaycastParams();
+								raycastParams->FilterDescendantsInstances = (uintptr_t)&FilterDescendantsInstances;
+
+								static RaycastResult ret;
+								reinterpret_cast<int(__thiscall*)(int, RaycastResult*, RBX::Vector3*, RBX::Vector3*, RaycastParams*)>(Raycast.Func())(workspace.ptr(), &ret, &LocalOrigin, &direction, raycastParams);
+								if (ret.Instance) continue;
+							}
 
 							std::pair<RBX::Vector2, float> pair = CurrentCamera->WorldToViewportPoint(position);
 
@@ -79,24 +99,56 @@ namespace Exploit {
 				return this->Enabled && (bool)GetAsyncKeyState(aimbotKey);
 			}
 
-			void OnStep() {
+			void OnStep(float dT = 1.f / 60.f) { // need to implement proper dt
 				if (!this->Enabled) return;
 				RBX::TaskScheduler* taskScheduler = RBX::TaskScheduler::GetSingleton(); // in future allow singleton to rescan if rejoin game
 				if (RBX::Instance dataModel = taskScheduler->FindJobByName("Render").GetDataModel()) {
 					if (RBX::Instance players = dataModel.FindFirstChildOfClass("Players")) {
 						RBX::Instance target;
 						if (this->isActive() && this->GetClosestPlayerToMouse(players, target)) {
-							printf("target : %s\n", target.Name().c_str());
+							if (RBX::Instance character = target.GetPropertyValue<int>("Character"))
+								if (RBX::Instance targetPart = character.FindFirstChild(Exploit::Aimbot::aimPart)) {
+									RBX::CurrentCamera* CurrentCamera = RBX::CurrentCamera::GetSingleton();
+									RBX::Instance camera = CurrentCamera->GetCamera();
+
+									if (Exploit::Aimbot::aimbotMethod) { // camera - WORK ON MOVING CAM POS TO WHERE MOUSE IS POINTING
+										RBX::CoordinateFrame cframe = camera.GetCustomPropertyValue<RBX::CoordinateFrame>("CFrame");
+										if (Exploit::Aimbot::Smoothing) {
+											if (!prev_target) prev_target = target;
+											if (lerpAlpha > 1.f) lerpAlpha = 1.f;
+
+										//	RBX::CoordinateFrame targetcframe = dataModel.FindFirstChildOfClass("Workspace").FindFirstChild("Baseplate").GetCustomPropertyValue<RBX::CoordinateFrame>("CFrame");
+											RBX::CoordinateFrame targetcframe = cframe;
+											targetcframe.lookAt(dataModel.FindFirstChildOfClass("Workspace").FindFirstChild("Baseplate").GetCustomPropertyValue<RBX::Vector3>("Position"));
+											RBX::CoordinateFrame lrp = cframe.lerp(targetcframe, lerpAlpha);
+
+											camera.SetCustomPropertyValue<RBX::CoordinateFrame>("CFrame", lrp);
+
+											lerpAlpha += 0.1f * dT;
+										}
+										else {
+											cframe.lookAt(targetPart.GetCustomPropertyValue<RBX::Vector3>("Position"));
+											camera.SetCustomPropertyValue<RBX::CoordinateFrame>("CFrame", cframe);
+										}
+									}
+									else { // mouse
+
+									}
+								}
+						}
+						else {
+							prev_target = target;
+							lerpAlpha = 0.f;
 						}
 					}
 				}
 			}
-
-			bool aimbotMethod = true;
-			bool WallCheck = true;
 		private:
-			BYTE aimbotKey = VK_MENU;
+			RBX::Instance prev_target;
+			float lerpAlpha = 0.f;
 
+			BYTE aimbotKey = VK_MENU;
+			// implement bezier curve?
 			void initialise() {
 
 			}

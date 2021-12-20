@@ -33,6 +33,9 @@
     <Filter Include="Header Files\Exploit\RBLX\g3dimpl">
       <UniqueIdentifier>{98e70543-fc8b-4e74-851d-881b0d469e1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\UI\imgui">
+      <UniqueIdentifier>{a28c028e-7cb3-41c9-bd60-7cbaa997c630}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -99,6 +102,12 @@
     </ClInclude>
     <ClInclude Include="CurrentCamera.h">
       <Filter>Header Files\Exploit\RBLX</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckHelper.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Quat.h">
+      <Filter>Header Files\Exploit\RBLX\g3dimpl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Matrix3.h"
+#include "Quat.h"
 
 namespace g3dimpl {
 	class CoordinateFrame {
@@ -99,6 +100,25 @@ namespace g3dimpl {
 			rotation.setColumn(0, x);
 			rotation.setColumn(1, y);
 			rotation.setColumn(2, z);
+		}
+
+		CoordinateFrame fromEulerAnglesXYZ(float fYAngle, float fPAngle, float fRAngle) {
+			CoordinateFrame cf;
+			cf.rotation = cf.rotation.fromEulerAnglesXYZ(fYAngle, fPAngle, fRAngle);
+			return cf;
+		}
+
+		CoordinateFrame lerp(CoordinateFrame other, float alpha) {
+			if (alpha == 1.f)
+				return other;
+			else if (alpha == 0.f)
+				return *this;
+			else {
+				const Quat q1(this->rotation);
+				const Quat q2(other.rotation);
+
+				return CoordinateFrame(q1.slerp(q2, alpha).toRotationMatrix(), translation * (1.f - alpha) + other.translation * alpha);
+			}
 		}
 	};
 }

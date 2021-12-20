@@ -45,6 +45,10 @@ namespace g3dimpl {
 			return Vector3(x * rkVector.x, y * rkVector.y, z * rkVector.z);
 		}
 
+		inline Vector3 __fastcall operator/ (float s) const {
+			return *this * (1.0f / s);
+		}
+
 		inline Vector3 operator*(float f) const {
 			return Vector3(x * f, y * f, z * f);
 		}
